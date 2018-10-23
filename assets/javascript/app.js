@@ -1,7 +1,6 @@
 $("document").ready(function() {
   var timeCount;
   var timeZero;
-
   var number;
   var number0;
   var number1;
@@ -14,24 +13,37 @@ $("document").ready(function() {
   var loose = 0;
   var unanswered = 0;
   var stop = 0;
-
   var objects = [
     {
-      q1: "Freddy is?",
-      answer: ["Mercury", "Gregory", "Someone!"],
-      correct: "Mercury"
+      q1: "Tell Me How Do You Clear A Floated Element?",
+      answer: ["clear:before", "clear:both", "clear:after"],
+      correct: "clear:both"
     },
     {
-      q1: "I love ...!",
-      answer: ["Me", "You", "Anyone"],
-      correct: "You"
+      q1: "How Do Browsers Read Css?",
+      answer: ["From right to left", "From left ro right", "From top to bottom"],
+      correct: "From right to left"
     },
     {
-      q1: "WEB",
-      answer: ["site", "programming", "course"],
-      correct: "site"
+      q1: "What Is The Difference Between Json And Jsonp?",
+      answer: ["JSONP is JSON with post", "JSONP is JSON with protocol", "JSONP is JSON with padding"],
+      correct: "JSONP is JSON with padding"
     }
   ];
+
+// timeup
+  var searchURL=function(name){
+    var queryURL=("https://api.giphy.com/v1/gifs/search?q="+name+"&api_key=qNUiyTFw5FDbggtIQ44CZO8gyNTgmI1R");
+
+    $.ajax({
+      url:queryURL,
+      method:"GET"
+    }).then(function(response){
+      $("img").attr("src",response.data[0].images.preview_gif.url);
+
+    });
+
+  }
 
   function shuffle(a) {
     var j, x, i;
@@ -55,8 +67,8 @@ $("document").ready(function() {
       if (stop == 3) {
         condition = false;
         clearInterval(timeCount);
-        $("#demo").addClass("hide");
-        $("ol").addClass("hide");
+        $("#demo, ol").addClass("remove");
+        
         $("#read").html(
           "You loose: " +
             loose +
@@ -66,17 +78,17 @@ $("document").ready(function() {
             unanswered +
             ""
         );
+        searchURL("theend");
+        $("img").removeClass("remove");
         $("button").removeClass("hide");
         $("button").text("Over again!");
-
-        
       }
+      
 
       if (condition) {
-        $("#display").removeClass("hide");
-        $("#demo").removeClass("hide");
-        $("ol").removeClass("hide");
-        $("#read").removeClass("hide");
+        
+        $("img").addClass("remove");
+        $("#display, #demo, #read, ol").removeClass("hide remove");
         $("#read").text(objects[count].q1);
         $("#1").text(objects[count].answer[number0]);
         $("#2").text(objects[count].answer[number1]);
@@ -85,28 +97,31 @@ $("document").ready(function() {
       }
 
       if (time === 0) {
-        $("#demo").html(time);
+        $("#demo").html("<p>Time Remaining: "+time+" seconds</p>");
         timeZero();
       }
-      $("#demo").html(time);
+      $("#demo").html("<p>Time Remaining: "+time+" seconds</p>");
       time--;
     }, 1000);
   }
 
   timeZero = function() {
-    // $("#demo").html(time);
     $("#read").html(
       "Loooooooser. The right answer is " + objects[count].correct
     );
+    
+    searchURL("timeup");
+    $("img").removeClass("remove");
     clearInterval(timeCount);
+    
 
     condition = true;
-    $("ol").addClass("hide");
+    $("ol").addClass("remove");
 
     stop++;
     count++;
     unanswered++;
-    // time = 10;
+    
     setTimeout(start, 2000);
   };
 
@@ -130,13 +145,14 @@ $("document").ready(function() {
       $("#read").html(
         "You are right. The answer is: " + objects[count].correct
       );
-      $("ol").addClass("hide");
+      searchURL("excelent");
+      $("img").removeClass("remove");
+      $("ol").addClass("remove");
 
       condition = true;
       stop++;
       win++;
       count++;
-      // time = 10;
       setTimeout(start, 2000);
     } else {
       clearInterval(timeCount);
@@ -144,13 +160,14 @@ $("document").ready(function() {
       $("#read").html(
         "You are wrong. The answer is: " + objects[count].correct
       );
-      $("ol").addClass("hide");
+      searchURL("badidea");
+      $("img").removeClass("remove");
+      $("ol").addClass("remove");
 
       stop++;
       loose++;
       condition = true;
       count++;
-      // time = 10;
       setTimeout(start, 2000);
     }
   });
