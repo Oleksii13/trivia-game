@@ -13,6 +13,7 @@ $("document").ready(function() {
   var loose = 0;
   var unanswered = 0;
   var stop = 0;
+  // questions array, you can add questions here and line 8, without changing other code
   var objects = [
     {
       q1: "Tell Me How Do You Clear A Floated Element?",
@@ -31,7 +32,8 @@ $("document").ready(function() {
     }
   ];
 
-// timeup
+
+// played Giphy API
   var searchURL=function(name){
     var queryURL=("https://api.giphy.com/v1/gifs/search?q="+name+"&api_key=qNUiyTFw5FDbggtIQ44CZO8gyNTgmI1R");
 
@@ -45,6 +47,7 @@ $("document").ready(function() {
 
   }
 
+  // function that shuffles answers in the question
   function shuffle(a) {
     var j, x, i;
     for (i = a.length - 1; i > 0; i--) {
@@ -56,15 +59,20 @@ $("document").ready(function() {
     return a;
   }
 
+  // main function
   function start() {
     number = shuffle(myArray);
+    // assign shuffled answers
     number0 = number[0];
     number1 = number[1];
     number2 = number[2];
+    // timer
     time = 10;
-
+// repeating statements
     timeCount = setInterval(function() {
+      // if out of questions, shows result screen
       if (stop == 3) {
+        searchURL("theend");
         condition = false;
         clearInterval(timeCount);
         $("#demo, ol").addClass("remove");
@@ -78,13 +86,13 @@ $("document").ready(function() {
             unanswered +
             ""
         );
-        searchURL("theend");
+        // hides elements
         $("img").removeClass("remove");
         $("button").removeClass("hide");
         $("button").text("Over again!");
       }
       
-
+// displays questions with the answers
       if (condition) {
         
         $("img").addClass("remove");
@@ -96,6 +104,7 @@ $("document").ready(function() {
         condition = false;
       }
 
+      // when Time Up
       if (time === 0) {
         $("#demo").html("<p>Time Remaining: "+time+" seconds</p>");
         timeZero();
@@ -105,6 +114,7 @@ $("document").ready(function() {
     }, 1000);
   }
 
+  // when Time Up function
   timeZero = function() {
     $("#read").html(
       "Loooooooser. The right answer is " + objects[count].correct
@@ -125,6 +135,7 @@ $("document").ready(function() {
     setTimeout(start, 2000);
   };
 
+  // start button with renew all stats
   $("button").click(function() {
     $("button").addClass("hide");
     time = 10;
@@ -138,8 +149,10 @@ $("document").ready(function() {
     start();
   });
 
+  // event for answers
   $("li").click(function() {
     var content = $(this).text();
+    // if answer is right
     if (content == objects[count].correct) {
       clearInterval(timeCount);
       $("#read").html(
@@ -154,7 +167,9 @@ $("document").ready(function() {
       win++;
       count++;
       setTimeout(start, 2000);
-    } else {
+    }
+    // if answer is wrong 
+    else {
       clearInterval(timeCount);
 
       $("#read").html(
